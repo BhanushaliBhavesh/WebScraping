@@ -6,11 +6,18 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+# settings.py
+
+#
 
 BOT_NAME = "bookscraper"
 
 SPIDER_MODULES = ["bookscraper.spiders"]
 NEWSPIDER_MODULE = "bookscraper.spiders"
+
+
+
+
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -62,9 +69,9 @@ ROBOTSTXT_OBEY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "bookscraper.pipelines.BookscraperPipeline": 300,
-#}
+ITEM_PIPELINES = {
+    "bookscraper.pipelines.BookscraperPipeline": 300,
+}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

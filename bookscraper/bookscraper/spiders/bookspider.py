@@ -1,6 +1,10 @@
 import scrapy
 from bookscraper.items import BookItem
 
+
+def string_cleaner(rouge_text):
+    return ("".join(rouge_text.strip()).encode('latin_1', 'ignore').decode("latin_1"))
+
 class BookspiderSpider(scrapy.Spider):
     name = "bookspider"
     allowed_domains = ["books.toscrape.com"]
@@ -22,21 +26,17 @@ class BookspiderSpider(scrapy.Spider):
 
             yield response.follow(book_url,callback = self.bookparse)
 
+        
+        next_page = response.xpath("//li[@class='next']/a/@href").get()
 
-#
-#        
-#        next_page = response.xpath("//li[@class='next']/a/@href").get()
-#
+        if next_page is not None:
 
-#        if next_page is not None:
-#
-#            if 'catalogue/' in next_page:
-#                    next_page_url = "https://books.toscrape.com/"+next_page
-#            else:
-#                    next_page_url = "https://books.toscrape.com/catalogue/"+next_page
-#            
-#            yield response.follow(next_page_url,callback = self.parse)
-#
+            if 'catalogue/' in next_page:
+                    next_page_url = "https://books.toscrape.com/"+next_page
+            else:
+                    next_page_url = "https://books.toscrape.com/catalogue/"+next_page
+            
+            yield response.follow(next_page_url,callback = self.parse)
 
     def bookparse(self,response):
         
@@ -50,7 +50,7 @@ class BookspiderSpider(scrapy.Spider):
         book_item['title'] = response.xpath("//div/h1/text()").get()
         book_item['category'] = response.xpath("//li[@class='active'] //preceding-sibling::li[1]/a/text()").get()
         book_item['stars'] = response.xpath("//p[contains(@class, 'star-rating')]/@class").get()
-        book_item['product_description'] = response.xpath("//div[@id = 'product_description'] //following-sibling::p/text()").get()
+        book_item['product_description'] =  response.xpath("//div[@id = 'product_description'] //following-sibling::p/text()").get()
         book_item['upc'] = table.xpath("//tr[1]/td[1]/text()").get()
         book_item['product_type'] = table.xpath("//tr[2]/td[1]/text()").get()
         book_item['price_execluding_tax'] = table.xpath("//tr[3]/td[1]/text()").get()
